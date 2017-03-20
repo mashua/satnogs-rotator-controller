@@ -3,34 +3,6 @@
 #include <math.h>
 #include <AccelStepper.h>
 
-#define DIR_AZ 6 /*PIN for Azimuth Direction*/
-#define STEP_AZ 5 /*PIN for Azimuth Steps*/
-#define DIR_EL 10 /*PIN for Elevation Direction*/
-#define STEP_EL 9 /*PIN for Elevation Steps*/
-
-#define EN 8 /*PIN for Enable or Disable Stepper Motors*/
-
-#define SPR 200 /*Step Per Revolution*/
-#define RATIO 54 /*Gear ratio*/
-#define T_DELAY 60000 /*Time to disable the motors in millisecond*/
-
-#define HOME_AZ 4 /*Homing switch for Azimuth*/
-#define HOME_EL 3 /*Homing switch for Elevation*/
-
-#define MAX_AZ_ANGLE 365 /*Maximum Angle of Azimuth for homing scanning*/
-#define MAX_EL_ANGLE 365 /*Maximum Angle of Elevation for homing scanning*/
-
-#define MAX_SPEED 300
-#define MAX_ACCELERATION 100
-
-#define MIN_PULSE_WIDTH 20 /*in microsecond*/
-
-#define DEFAULT_HOME_STATE HIGH /*Change to LOW according to Home sensor*/
-
-#define HOME_DELAY 6000 /*Time for homing Decceleration in millisecond*/
-
-#define BufferSize 256
-#define BaudRate 19200
 
 /*Global Variables*/
 unsigned long t_DIS = 0; /*time to disable the Motors*/
@@ -39,7 +11,7 @@ AccelStepper AZstepper(1, STEP_AZ, DIR_AZ);
 AccelStepper ELstepper(1, STEP_EL, DIR_EL);
 
 void setup()
-{  
+{
   /*Change these to suit your stepper if you want*/
   AZstepper.setMaxSpeed(MAX_SPEED);
   AZstepper.setAcceleration(MAX_ACCELERATION);
@@ -62,7 +34,7 @@ void setup()
 }
 
 void loop()
-{ 
+{
   /*Define the steps*/
   static int AZstep = 0;
   static int ELstep = 0;
@@ -76,7 +48,7 @@ void loop()
   /*Enable Motors*/
   else
     digitalWrite(EN, LOW);
-    
+
   /*Read the steps from serial*/
   cmd_proc(AZstep, ELstep);
   /*Move the Azimuth & Elevation Motor*/
@@ -90,10 +62,10 @@ void Homing(int AZsteps, int ELsteps)
   int value_Home_EL = DEFAULT_HOME_STATE;
   boolean isHome_AZ = false;
   boolean isHome_EL = false;
-  
+
   AZstepper.moveTo(AZsteps);
   ELstepper.moveTo(ELsteps);
-  
+
   while(isHome_AZ == false || isHome_EL == false)
   {
     value_Home_AZ = digitalRead(HOME_AZ);
@@ -103,7 +75,7 @@ void Homing(int AZsteps, int ELsteps)
     {
       AZstepper.moveTo(AZstepper.currentPosition());
       isHome_AZ = true;
-    }   
+    }
     /*Change to LOW according to Home sensor*/
     if (value_Home_EL == DEFAULT_HOME_STATE)
     {
@@ -124,17 +96,17 @@ void Homing(int AZsteps, int ELsteps)
     ELstepper.run();
   }
   /*Delay to Deccelerate*/
-  long time = millis();  
+  long time = millis();
   while(millis() - time < HOME_DELAY)
-  {  
+  {
     AZstepper.run();
     ELstepper.run();
   }
   /*Reset the steps*/
   AZstepper.setCurrentPosition(0);
-  ELstepper.setCurrentPosition(0); 
+  ELstepper.setCurrentPosition(0);
 }
- 
+
 /*EasyComm 2 Protocol & Calculate the steps*/
 void cmd_proc(int &stepAz, int &stepEl)
 {
@@ -145,9 +117,9 @@ void cmd_proc(int &stepAz, int &stepEl)
   char *rawData;
   static int BufferCnt = 0;
   char data[100];
-  
+
   double angleAz, angleEl;
-  
+
   /*Read from serial*/
   while (Serial.available() > 0)
   {
@@ -232,7 +204,7 @@ void cmd_proc(int &stepAz, int &stepEl)
         /*Zero the steps*/
         stepAz = 0;
         stepEl = 0;
-      }      
+      }
       BufferCnt = 0;
       /*Reset the disable motor time*/
       t_DIS = 0;
@@ -278,7 +250,7 @@ void stepper_move(int stepAz, int stepEl)
 {
   AZstepper.moveTo(stepAz);
   ELstepper.moveTo(stepEl);
-    
+
   AZstepper.run();
   ELstepper.run();
 }
