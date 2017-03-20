@@ -3,9 +3,9 @@
 #include <math.h>
 #include <AccelStepper.h>
 
-
 /*Global Variables*/
 unsigned long t_DIS = 0; /*time to disable the Motors*/
+
 /*Define a stepper and the pins it will use*/
 AccelStepper AZstepper(1, STEP_AZ, DIR_AZ);
 AccelStepper ELstepper(1, STEP_EL, DIR_EL);

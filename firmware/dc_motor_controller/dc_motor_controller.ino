@@ -2,43 +2,6 @@
 #include <Wire.h>
 //#include <avr/wdt.h>
 
-/* H-bridge defines */
-#define PWM1M1 5
-#define PWM2M1 6
-#define PWM1M2 9
-#define PWM2M2 10
-/* Limits for control signal */
-#define outMax 120
-#define outMin 35
-#define Deadband 1
-/* Encoder defines */
-#define sda_pin 16
-#define scl_pin 14
-#define as5601_adr 0x36
-#define raw_ang_high 0x0c
-#define raw_ang_low 0x0d
-#define status_reg 0x0b
-/* Ratio of worm gear */
-#define RATIO 30
-/* Maximum Angle for homing scanning */
-#define SEEK_MOVE 30
-#define MIN_AZ_ANGLE 0
-#define MAX_AZ_ANGLE 370
-#define MIN_EL_ANGLE 0
-#define MAX_EL_ANGLE 110
-/* Homing switch */
-#define HOME_AZ 4
-#define HOME_EL 7
-/* Change to LOW according to Home sensor */
-#define DEFAULT_HOME_STATE 1
-/* Time to disable the motors in millisecond */
-#define T_DELAY 1000
-/* PIN for Enable or Disable Stepper Motors */
-#define EN 8
-/* Serial configuration */
-#define BufferSize 256
-#define BaudRate 19200
-#define TX_EN A3
 /*Global Variables*/
 unsigned long t_DIS = 0; /*time to disable the Motors*/
 /* angle offset */
